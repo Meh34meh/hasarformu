@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HASAR ÖN EKSPERTİZ SİSTEMİ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .login-page {
+            background-color: #e6f2ff; /* Açık mavi */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .login-form img {
+            width: 15px;
+            height: 15px;
+            margin-bottom: 20px;
+        }
+        .login-form input {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .login-form button {
+            width: 100%;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .login-form button:hover {
+            background-color: #003d80;
+        }
+
+        .list-page {
+            background-color: #e0f7fa; /* Yeni ana sayfa rengi */
+            padding: 20px;
+        }
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background-color: #0056b3;
+            color: white;
+            padding: 10px;
+        }
+        .header-buttons button, .header-info button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin-right: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .header-buttons button:hover, .header-info button:hover {
+            background-color: #004494;
+        }
+        .header-info input {
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        #fileListTable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .header-row {
+            background-color: #0056b3;
+            color: white;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        #fileListTable th, #fileListTable td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        #fileListTable th {
+            background-color: #007bff;
+        }
+        #fileListTable tbody tr:nth-child(odd) {
+            background-color: #f1f1f1;
+        }
+        #fileListTable td {
+            background-color: white;
+        }
+        #fileListTable td button {
+            padding: 5px 10px;
+            margin-right: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #fileListTable td button:nth-child(1) {
+            background-color: #007bff;
+            color: white;
+        }
+        #fileListTable td button:nth-child(2) {
+            background-color: #28a745;
+            color: white;
+        }
+        #fileListTable td button:nth-child(3) {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        /* Diğer tüm CSS kuralları burada */
+        .form-page {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .form-page header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .form-page header .logo {
+            max-height: 60px;
+        }
+        .form-page header h1 {
+            margin: 0;
+            color: #0056b3;
+            font-size: 2rem;
+            text-align: center;
+            flex-grow: 1;
+        }
+        .form-page table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .form-page th, .form-page td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .form-page th {
+            background-color: #0056b3;
+            color: white;
+            text-transform: uppercase;
+        }
+        .form-page h2 {
+            background-color: #0056b3;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .form-page input, .form-page textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-page .upload-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 100px;
+        }
+        .form-page .file-box {
+            width: 80px;
+            height: 80px;
+            background-color: #eaeaea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-page .file-box img {
+            max-width: 100%;
+            max-height: 100%;
+            cursor: pointer;
+        }
+        .form-page .delete-btn {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .form-page .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .form-page .modal img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .form-page .modal .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+        }
+        .form-page .modal .prev,
+        .form-page .modal .next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+        }
+        .form-page .modal .prev {
+            left: 10px;
+        }
+        .form-page .modal .next {
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Giriş sayfası -->
+    <div id="loginPage" class="login-page">
+        <div class="login-form">
+            <img src="logo.png" alt="Logo" style="display: block; margin: 0 auto;">
+            <input type="text" id="username" placeholder="Kullanıcı Adı">
+            <input type="password" id="password" placeholder="Şifre">
+            <button onclick="login()">Giriş Yap</button>
+        </div>
+    </div>
+
+    <!-- Ana sayfa -->
+    <div id="mainPage" class="list-page" style="display: none;">
+        <header class="main-header">
+            <div class="header-buttons">
+                <button id="newEntry">YENİ İHBAR</button>
+                <button id="openFiles">AÇIK DOSYALAR</button>
+                <button id="closedFiles">KAPALI DOSYALAR</button>
+            </div>
+            <div class="header-info">
+                <span id="currentTime"></span>
+                <span id="currentDate"></span>
+                <input type="text" id="searchInput" placeholder="ARAMA ÇUBUĞU" aria-label="Ara">
+                <button id="searchBtn" aria-label="Ara">ARA</button>
+            </div>
+        </header>
+        <table id="fileListTable">
+            <thead>
+                <tr class="header-row">
+                    <th>SİGORTA ŞİRKETİ</th>
+                    <th>ARAÇ PLAKA NO</th>
+                    <th>DOSYA NO</th>
+                    <th>İHBAR TARİHİ</th>
+                    <th>İŞLEMLER</th>
+                </tr>
+            </thead>
+            <tbody id="fileListTbody">
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Form sayfası -->
+    <div id="formPage" class="form-page" style="display: none;">
+        <div class="container" id="formToPDF">
+            <header>
+                <img src="logo.png" alt="Logo Sol" class="logo">
+                <h1>HASAR ÖN EKSPERTİZ FORMU</h1>
+                <img src="logo.png" alt="Logo Sağ" class="logo">
+                <button id="printButton" style="float: right; margin-top: 10px;">YAZDIR</button>
+            </header>
+
+            <table>
+                <tr>
+                    <th>SİGORTA ŞİRKETİ</th>
+                    <th>ARAÇ PLAKA NO</th>
+                    <th>DOSYA NO</th>
+                    <th>HASAR İHBAR TARİHİ</th>
+                </tr>
+                <tr>
+                    <td><input type="text" name="sigorta_sirketi"></td>
+                    <td><input type="text" name="arac_plaka"></td>
+                    <td><input type="text" name="dosya_no"></td>
+                    <td><input type="date" name="ihbar_tarihi"></td>
+                </tr>
+            </table>
+
+            <h2>Müşteri Bilgileri & Kusurlu Araç Bilgileri</h2>
+            <table>
+                <tr>
+                    <th>Müşteri Bilgileri</th>
+                    <th>Kusurlu Araç Bilgileri</th>
+                </tr>
+                <tr>
+                    <td>Ruhsat Sahibi Ad Soyad:<br><input type="text" name="musteri_ad"></td>
+                    <td>Ruhsat Sahibi Ad Soyad:<br><input type="text" name="kusurlu_ad"></td>
+                </tr>
+                <tr>
+                    <td>Ruhsat Sahibi TC No:<br><input type="text" name="musteri_tc"></td>
+                    <td>Ruhsat Sahibi TC No:<br><input type="text" name="kusurlu_tc"></td>
+                </tr>
+                <tr>
+                    <td>Ruhsat Sahibi Tel No:<br><input type="text" name="musteri_tel"></td>
+                    <td>Ruhsat Sahibi Tel No:<br><input type="text" name="kusurlu_tel"></td>
+                </tr>
+                <tr>
+                    <td>Araç Marka - Model:<br><input type="text" name="musteri_arac"></td>
+                    <td>Araç Marka - Model:<br><input type="text" name="kusurlu_arac"></td>
+                </tr>
+                <tr>
+                    <td>Şasi No:<br><input type="text" name="musteri_sasi"></td>
+                    <td>Şasi No:<br><input type="text" name="kusurlu_sasi"></td>
+                </tr>
+                <tr>
+                    <td>Ruhsat Seri No:<br><input type="text" name="musteri_ruhsat_seri"></td>
+                    <td>Ruhsat Seri No:<br><input type="text" name="kusurlu_ruhsat_seri"></td>
+                </tr>
+                <tr>
+                    <td>Motor No:<br><input type="text" name="musteri_motor"></td>
+                    <td>Motor No:<br><input type="text" name="kusurlu_motor"></td>
+                </tr>
+                <tr>
+                    <td>Sigorta Şirketi:<br><input type="text" name="musteri_sigorta"></td>
+                    <td>Sigorta Şirketi:<br><input type="text" name="kusurlu_sigorta"></td>
+                </tr>
+                <tr>
+                    <td>Poliçe No:<br><input type="text" name="musteri_police"></td>
+                    <td>Poliçe No:<br><input type="text" name="kusurlu_police"></td>
+                </tr>
+                <tr>
+                    <td>Sürücü Adı Soyadı:<br><input type="text" name="musteri_surucu_ad"></td>
+                    <td>Sürücü Adı Soyadı:<br><input type="text" name="kusurlu_surucu_ad"></td>
+                </tr>
+                <tr>
+                    <td>Sürücü Doğum Tarihi:<br><input type="date" name="musteri_surucu_dogum"></td>
+                    <td>Sürücü Doğum Tarihi:<br><input type="date" name="kusurlu_surucu_dogum"></td>
+                </tr>
+                <tr>
+                    <td>Sürücü TC No:<br><input type="text" name="musteri_surucu_tc"></td>
+                    <td>Sürücü TC No:<br><input type="text" name="kusurlu_surucu_tc"></td>
+                </tr>
+                <tr>
+                    <td>Sürücü Tel No:<br><input type="text" name="musteri_surucu_tel"></td>
+                    <td>Sürücü Tel No:<br><input type="text" name="kusurlu_surucu_tel"></td>
+                </tr>
+            </table>
+
+            <!-- Parça Bilgileri -->
+            <h2>Parça Bilgileri</h2>
+            <table id="parcaTable">
+                <tr>
+                    <th>Parça Referans No</th>
+                    <th>Değişecek Parçalar</th>
+                    <th>Onarılacak Parçalar</th>
+                    <th>Boyanacak Parçalar</th>
+                </tr>
+                <tr>
+                    <td><input type="text" name="parca_referans"></td>
+                    <td><input type="text" name="degisecek_parca"></td>
+                    <td><input type="text" name="onarilacak_parca"></td>
+                    <td><input type="text" name="boyanacak_parca" onkeypress="checkEnter(event)"></td>
+                </tr>
+            </table>
+
+            <h2>Eksper Bilgileri</h2>
+            <table>
+                <tr>
+                    <th>Eksper Ad Soyad</th>
+                    <th>Telefon</th>
+                    <th>E-Posta</th>
+                    <th>Ziyaret Tarihi</th>
+                    <th>İmza</th>
+                             </tr>
+                <tr>
+                    <td><input type="text" name="eksper_ad"></td>
+                    <td><input type="text" name="eksper_tel"></td>
+                    <td><input type="email" name="eksper_email"></td>
+                    <td><input type="date" name="eksper_tarih"></td>
+                    <td><input type="text" name="eksper_imza"></td>
+                </tr>
+            </table>
+
+            <h2>Hasar Genel İşçilik</h2>
+            <table>
+                <tr>
+                    <th>Kaporta</th>
+                    <th>Boya</th>
+                    <th>Mekanik</th>
+                    <th>Elektrik</th>
+                    <th>Trim</th>
+                    <th>Şase</th>
+                    <th>Rot-Balans</th>
+                    <th>Klima Gazı</th>
+                    <th>Servis Parça Tedarik</th>
+                    <th>TOPLAM FİYAT</th>
+                </tr>
+                <tr>
+                    <td><input type="text" class="fiyat" name="kaporta"></td>
+                    <td><input type="text" class="fiyat" name="boya"></td>
+                    <td><input type="text" class="fiyat" name="mekanik"></td>
+                    <td><input type="text" class="fiyat" name="elektrik"></td>
+                    <td><input type="text" class="fiyat" name="trim"></td>
+                    <td><input type="text" class="fiyat" name="sase"></td>
+                    <td><input type="text" class="fiyat" name="rot_balans"></td>
+                    <td><input type="text" class="fiyat" name="klima_gazi"></td>
+                    <td><input type="text" class="fiyat" name="servis_parca"></td>
+                    <td><div id="toplam">Toplam Tutar: 0,00 TL</div></td>
+                </tr>
+            </table>
+
+            <!-- Evrak Yükle -->
+            <div class="section">
+                <div class="section-header">
+                    <button onclick="document.getElementById('evrakInput').click()">Evrak Yükle</button>
+                    <button onclick="indirDosyalar('evrak')">Evrakları İndir</button>
+                </div>
+                <input type="file" id="evrakInput" multiple style="display: none;" onchange="yukleDosyalar(this, 'evrak')">
+                <div class="upload-container" id="evrak"></div>
+            </div>
+
+            <!-- Hasar Resimleri Yükle -->
+            <div class="section">
+                <div class="section-header">
+                    <button onclick="document.getElementById('hasarInput').click()">Hasar Resimleri Yükle</button>
+                    <button onclick="indirDosyalar('hasar')">Hasar Resimlerini İndir</button>
+                </div>
+                <input type="file" id="hasarInput" multiple style="display: none;" onchange="yukleDosyalar(this, 'hasar')">
+                <div class="upload-container" id="hasar"></div>
+            </div>
+
+            <!-- Onarım Resimleri Yükle -->
+            <div class="section">
+                <div class="section-header">
+                    <button onclick="document.getElementById('onarimInput').click()">Onarım Resimleri Yükle</button>
+                    <button onclick="indirDosyalar('onarim')">Onarım Resimlerini İndir</button>
+                </div>
+                <input type="file" id="onarimInput" multiple style="display: none;" onchange="yukleDosyalar(this, 'onarim')">
+                <div class="upload-container" id="onarim"></div>
+            </div>
+
+            <!-- Alt Butonlar -->
+            <div class="buttons">
+                <button onclick="geriDon()">Geri</button>
+                <button onclick="kaydetVeriler()">Kaydet</button>
+            </div>
+        </div>
+
+        <!-- Modal Yapısı -->
+        <div class="modal" id="imageModal">
+            <span class="close" onclick="kapatModal()">×</span>
+            <span class="prev" onclick="gezinme(-1)">❮</span>
+            <img id="modalImage" src="" alt="">
+            <span class="next" onclick="gezinme(1)">❯</span>
+        </div>
+    </div>
+
+    <script>
+        let loggedIn = false;
+        let dataCounter = 1;
+        let data = JSON.parse(localStorage.getItem('hasarData') || '[]').map((item, index) => ({
+            ...item, 
+            id: item.id || generateUUID(), // Eğer ID yoksa yeni bir tane oluştur
+            status: item.status || 'open'
+        }));
+        let currentImageIndex = 0;
+        let imageList = [];
+
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (username === 'admin' && password === 'parola') {
+                loggedIn = true;
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('mainPage').style.display = 'block';
+                updateDateTime();
+                populateTable(data);
+            } else {
+                alert('Yanlış kullanıcı adı veya şifre!');
+            }
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString();
+            document.getElementById('currentDate').textContent = now.toLocaleDateString();
+        }
+
+        function populateTable(data) {
+            const tbody = document.getElementById('fileListTbody');
+            tbody.innerHTML = '';
+            data.forEach((item, index) => {
+                let row = tbody.insertRow(-1);
+                row.innerHTML = `
+                    <td>${item.sigorta_sirketi}</td>
+                    <td>${item.arac_plaka}</td>
+                    <td>${item.dosya_no}</td>
+                    <td>${item.ihbar_tarihi}</td>
+                    <td>
+                        <button onclick="archive('${item.id}')">ARŞİVLE</button>
+                        <button onclick="print('${item.id}')">YAZDIR</button>
+                        <button onclick="deleteItem('${item.id}')">SİL</button>
+                    </td>
+                `;
+                row.addEventListener('mouseover', function() {
+                    this.style.backgroundColor = '#e0e0e0';
+                });
+                row.addEventListener('mouseout', function() {
+                    this.style.backgroundColor = index % 2 === 0 ? '#f1f1f1' : 'white';
+                });
+                row.addEventListener('click', function() {
+                    showForm(item);
+                });
+            });
+        }
+
+        function showForm(data = {}) {
+            document.getElementById('mainPage').style.display = 'none';
+            document.getElementById('formPage').style.display = 'block';
+            
+            const inputs = document.querySelectorAll('#formPage input[name], #formPage textarea[name]');
+            inputs.forEach(input => {
+                input.value = data[input.name] || '';
+            });
+
+            // Dosya gösterimi
+            ['evrak', 'hasar', 'onarim'].forEach(type => {
+                const container = document.getElementById(type);
+                container.innerHTML = ''; // Önce mevcut dosyaları temizle
+                if (data[type + 'Dosyalari']) {
+                    data[type + 'Dosyalari'].forEach(src => {
+                        const fileBox = document.createElement('div');
+                        fileBox.className = 'file-box';
+                        const img = document.createElement('img');
+                        img.src = src;
+                        img.onclick = () => resimAc(src, type);
+                        fileBox.appendChild(img);
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.className = 'delete-btn';
+                        deleteBtn.textContent = 'X';
+                        deleteBtn.onclick = () => container.removeChild(fileBox);
+                        fileBox.appendChild(deleteBtn);
+                        container.appendChild(fileBox);
+                    });
+                }
+            });
+        }
+
+        function filterData() {
+            const searchValue = document.getElementById('searchInput').value.toLowerCase();
+            const filteredData = data.filter(item => 
+                Object.values(item).some(value => 
+                    value && value.toString().toLowerCase().includes(searchValue)
+                )
+            );
+            populateTable(filteredData);
+        }
+
+        function archive(id) {
+            if (confirm('Bu dosyayı arşivlemek istediğinize emin misiniz?')) {
+                const item = data.find(d => d.id === id);
+                if (item) {
+                    item.status = 'closed';
+                    localStorage.setItem('hasarData', JSON.stringify(data));
+                    populateTable(data);
+                }
+            }
+        }
+
+        function print(id) {
+            alert(`Dosya ${id} yazdırılıyor.`);
+        }
+
+        function deleteItem(id) {
+            if (confirm('Bu dosyayı silmek istediğinize emin misiniz?')) {
+                data = data.filter(item => item.id !== id);
+                localStorage.setItem('hasarData', JSON.stringify(data));
+                populateTable(data);
+            }
+        }
+
+        function checkEnter(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                const table = document.getElementById('parcaTable');
+                const newRow = table.insertRow(-1);
+                for (let i = 0; i < 4; i++) {
+                    const cell = newRow.insertCell(i);
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.onkeypress = checkEnter;
+                    cell.appendChild(input);
+                }
+            }
+        }
+
+        function hesaplaToplam() {
+            const fiyatInputs = document.querySelectorAll('.fiyat');
+            let toplam = 0;
+            fiyatInputs.forEach(input => {
+                toplam += parseFloat(input.value) || 0;
+            });
+            document.getElementById('toplam').innerText = `Toplam Tutar: ${toplam.toFixed(2)} TL`;
+        }
+
+        function yukleDosyalar(input, containerId) {
+            const container = document.getElementById(containerId);
+            for (let file of input.files) {
+                if (!file.type.startsWith('image/')) continue; // Sadece resim dosyalarını kabul et
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const fileBox = document.createElement('div');
+                    fileBox.className = 'file-box';
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.onclick = () => resimAc(e.target.result, containerId);
+                    fileBox.appendChild(img);
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'delete-btn';
+                    deleteBtn.textContent = 'X';
+                    deleteBtn.onclick = () => {
+                        container.removeChild(fileBox);
+                    };
+                    fileBox.appendChild(deleteBtn);
+                    container.appendChild(fileBox);
+                }
+                reader.readAsDataURL(file);
+            }
+            input.value = ''; // Dosya seçimini temizle
+        }
+
+        function resimAc(src, containerId) {
+            imageList = Array.from(document.getElementById(containerId).querySelectorAll('img')).map(img => img.src);
+            currentImageIndex = imageList.indexOf(src);
+            document.getElementById('modalImage').src = src;
+            document.getElementById('imageModal').style.display = 'block';
+        }
+
+        function kapatModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        function gezinme(direction) {
+            currentImageIndex += direction;
+            if (currentImageIndex < 0) currentImageIndex = imageList.length - 1;
+            if (currentImageIndex >= imageList.length) currentImageIndex = 0;
+            document.getElementById('modalImage').src = imageList[currentImageIndex];
+        }
+
+        function indirDosyalar(containerId) {
+            const container = document.getElementById(containerId);
+            const files = Array.from(container.querySelectorAll('img')).map(img => img.src);
+
+            if (files.length === 0) {
+                alert('İndirilecek dosya yok!');
+                return;
+            }
+
+            const zip = new JSZip();
+            const folder = zip.folder(containerId);
+
+            files.forEach((file, index) => {
+                fetch(file)
+                    .then(res => res.blob())
+                    .then(blob => {
+                        folder.file(`dosya_${index + 1}.jpg`, blob);
+                        if (index === files.length - 1) {
+                            zip.generateAsync({ type: 'blob' }).then(content => {
+                                const link = document.createElement('a');
+                                link.href = URL.createObjectURL(content);
+                                link.download = `${containerId}.zip`;
+                                link.click();
+                            });
+                        }
+                    });
+            });
+        }
+
+        function kaydetVeriler() {
+            let formData = {
+                id: generateUUID() // Her formun benzersiz bir ID'si olacak
+            };
+            let inputs = document.querySelectorAll('#formPage input[name], #formPage textarea[name]');
+            inputs.forEach(input => {
+                formData[input.name] = input.value;
+            });
+
+            // Dosya yüklemelerini de form verilerine ekleyin
+            ['evrak', 'hasar', 'onarim'].forEach(type => {
+                const container = document.getElementById(type);
+                formData[type + 'Dosyalari'] = Array.from(container.querySelectorAll('img')).map(img => img.src);
+            });
+
+            let storedData = JSON.parse(localStorage.getItem('hasarData') || '[]');
+            storedData.push(formData);
+            localStorage.setItem('hasarData', JSON.stringify(storedData));
+
+            alert('Veriler Kaydedildi!');
+            document.getElementById('formPage').style.display = 'none';
+            document.getElementById('mainPage').style.display = 'block';
+            populateTable(storedData); // Tabloyu güncelle
+        }
+
+        function geriDon() {
+            document.getElementById('formPage').style.display = 'none';
+            document.getElementById('mainPage').style.display = 'block';
+        }
+
+        document.getElementById('newEntry').addEventListener('click', () => {
+            showForm();
+        });
+
+        document.getElementById('openFiles').addEventListener('click', function() {
+            const openFiles = data.filter(item => item.status === 'open');
+            populateTable(openFiles);
+        });
+
+        document.getElementById('closedFiles').addEventListener('click', function() {
+            const closedFiles = data.filter(item => item.status === 'closed');
+            populateTable(closedFiles);
+        });
+
+        document.getElementById('searchBtn').addEventListener('click', filterData);
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                filterData();
+            }
+        });
+
+        document.querySelectorAll('.fiyat').forEach(input => {
+            input.addEventListener('input', hesaplaToplam);
+        });
+
+        window.onload = function() {
+            if (loggedIn) {
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('mainPage').style.display = 'block';
+                updateDateTime();
+                populateTable(data);
+            }
+        };
+    </script>
+    <!-- Dış kaynaklı kütüphaneler -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</body>
+</html>
+               
