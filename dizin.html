@@ -260,17 +260,45 @@
         .form-page .modal .next {
             right: 10px;
         }
+        
+        /* Onay Dialog Stili */
+        #confirmDialog {
+          display: none;
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: white;
+          padding: 20px;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+          z-index: 1001;
+        }
+
+        #confirmDialog button {
+          margin: 0 10px;
+          padding: 10px;
+          background: #0056b3;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+
+        #confirmDialog button:hover {
+          background: #003d80;
+        }
     </style>
 </head>
 <body>
-    <!-- Giriş sayfası -->
+     <!-- Giriş sayfası -->
     <div id="loginPage" class="login-page">
         <div class="login-form">
             <img src="logo.png" alt="Logo" style="display: block; margin: 0 auto;">
             <input type="text" id="username" placeholder="Kullanıcı Adı">
             <input type="password" id="password" placeholder="Şifre">
             <button onclick="login()">Giriş Yap</button>
-        </div>
+                </div>
     </div>
 
     <!-- Ana sayfa -->
@@ -283,7 +311,7 @@
             </div>
             <div class="header-info">
                 <span id="currentTime"></span>
-                <span id="currentDate"></span>
+                <span id="currentDate" style="margin-left: 40px;"></span>
                 <input type="text" id="searchInput" placeholder="ARAMA ÇUBUĞU" aria-label="Ara">
                 <button id="searchBtn" aria-label="Ara">ARA</button>
             </div>
@@ -375,7 +403,7 @@
                     <td>Sürücü Adı Soyadı:<br><input type="text" name="kusurlu_surucu_ad"></td>
                 </tr>
                 <tr>
-                    <td>Sürücü Doğum Tarihi:<br><input type="date" name="musteri_surucu_dogum"></td>
+                                       <td>Sürücü Doğum Tarihi:<br><input type="date" name="musteri_surucu_dogum"></td>
                     <td>Sürücü Doğum Tarihi:<br><input type="date" name="kusurlu_surucu_dogum"></td>
                 </tr>
                 <tr>
@@ -413,7 +441,7 @@
                     <th>E-Posta</th>
                     <th>Ziyaret Tarihi</th>
                     <th>İmza</th>
-                             </tr>
+                </tr>
                 <tr>
                     <td><input type="text" name="eksper_ad"></td>
                     <td><input type="text" name="eksper_tel"></td>
@@ -483,8 +511,8 @@
 
             <!-- Alt Butonlar -->
             <div class="buttons">
-                <button onclick="geriDon()">Geri</button>
-                <button onclick="kaydetVeriler()">Kaydet</button>
+                <button onclick="geriDon()" style="float: left; margin-right: 20px;">Geri</button>
+                <button onclick="kaydetVeriler()" style="float: right;">Kaydet</button>
             </div>
         </div>
 
@@ -497,6 +525,13 @@
         </div>
     </div>
 
+    <!-- Onay Dialog -->
+    <div id="confirmDialog" style="display: none;">
+      <p>SİLMEK İSTEDİĞİNİZDEN EMİN MİSİNİZ?</p>
+      <button onclick="confirmDelete(true)">EVET</button>
+      <button onclick="confirmDelete(false)">HAYIR</button>
+    </div>
+
     <script>
         let loggedIn = false;
         let dataCounter = 1;
@@ -507,6 +542,7 @@
         }));
         let currentImageIndex = 0;
         let imageList = [];
+        let deleteItemId = null;
 
         function generateUUID() {
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -531,8 +567,8 @@
 
         function updateDateTime() {
             const now = new Date();
-            document.getElementById('currentTime').textContent = now.toLocaleTimeString();
-            document.getElementById('currentDate').textContent = now.toLocaleDateString();
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString('tr-TR', {hour: '2-digit', minute: '2-digit'});
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('tr-TR', {year: 'numeric', month: 'long', day: 'numeric'});
         }
 
         function populateTable(data) {
@@ -551,6 +587,7 @@
                         <button onclick="deleteItem('${item.id}')">SİL</button>
                     </td>
                 `;
+                row.style.marginBottom = '10px';  // Satırlar arası boşluk
                 row.addEventListener('mouseover', function() {
                     this.style.backgroundColor = '#e0e0e0';
                 });
@@ -621,11 +658,18 @@
         }
 
         function deleteItem(id) {
-            if (confirm('Bu dosyayı silmek istediğinize emin misiniz?')) {
-                data = data.filter(item => item.id !== id);
+            deleteItemId = id;
+            document.getElementById('confirmDialog').style.display = 'block';
+        }
+
+        function confirmDelete(confirm) {
+            if (confirm && deleteItemId) {
+                data = data.filter(item => item.id !== deleteItemId);
                 localStorage.setItem('hasarData', JSON.stringify(data));
                 populateTable(data);
             }
+            document.getElementById('confirmDialog').style.display = 'none';
+            deleteItemId = null;
         }
 
         function checkEnter(event) {
@@ -693,7 +737,7 @@
             currentImageIndex += direction;
             if (currentImageIndex < 0) currentImageIndex = imageList.length - 1;
             if (currentImageIndex >= imageList.length) currentImageIndex = 0;
-            document.getElementById('modalImage').src = imageList[currentImageIndex];
+                        document.getElementById('modalImage').src = imageList[currentImageIndex];
         }
 
         function indirDosyalar(containerId) {
@@ -795,4 +839,3 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>
-               
