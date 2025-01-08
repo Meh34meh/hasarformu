@@ -298,7 +298,7 @@
             <input type="text" id="username" placeholder="Kullanıcı Adı">
             <input type="password" id="password" placeholder="Şifre">
             <button onclick="login()">Giriş Yap</button>
-                </div>
+        </div>
     </div>
 
     <!-- Ana sayfa -->
@@ -495,7 +495,8 @@
                     <button onclick="document.getElementById('hasarInput').click()">Hasar Resimleri Yükle</button>
                     <button onclick="indirDosyalar('hasar')">Hasar Resimlerini İndir</button>
                 </div>
-                <input type="file" id="hasarInput" multiple style="display: none;" onchange="yukleDosyalar(this, 'hasar')">
+                <input type="file" id="hasarInput" multiple style="display: none
+               " onchange="yukleDosyalar(this, 'hasar')">
                 <div class="upload-container" id="hasar"></div>
             </div>
 
@@ -602,8 +603,10 @@
 
         function showForm(data = {}) {
             document.getElementById('mainPage').style.display = 'none';
-            document.getElementById('formPage').style.display = 'block';
-            
+            const formPage = document.getElementById('formPage');
+            formPage.style.display = 'block';
+            formPage.dataset.currentId = data.id || ''; // mevcut dosyanın ID'sini sakla veya yeni bir ID için boş bırak
+
             const inputs = document.querySelectorAll('#formPage input[name], #formPage textarea[name]');
             inputs.forEach(input => {
                 input.value = data[input.name] || '';
@@ -737,7 +740,7 @@
             currentImageIndex += direction;
             if (currentImageIndex < 0) currentImageIndex = imageList.length - 1;
             if (currentImageIndex >= imageList.length) currentImageIndex = 0;
-                        document.getElementById('modalImage').src = imageList[currentImageIndex];
+            document.getElementById('modalImage').src = imageList[currentImageIndex];
         }
 
         function indirDosyalar(containerId) {
@@ -771,7 +774,7 @@
 
         function kaydetVeriler() {
             let formData = {
-                id: generateUUID() // Her formun benzersiz bir ID'si olacak
+                id: document.getElementById('formPage').dataset.currentId || generateUUID() // Eğer form zaten bir ID'ye sahipse kullan, yoksa yeni bir UUID oluştur.
             };
             let inputs = document.querySelectorAll('#formPage input[name], #formPage textarea[name]');
             inputs.forEach(input => {
@@ -784,14 +787,22 @@
                 formData[type + 'Dosyalari'] = Array.from(container.querySelectorAll('img')).map(img => img.src);
             });
 
-            let storedData = JSON.parse(localStorage.getItem('hasarData') || '[]');
-            storedData.push(formData);
-            localStorage.setItem('hasarData', JSON.stringify(storedData));
+            // Mevcut bir dosya mı güncelleniyor?
+            let itemIndex = data.findIndex(item => item.id === formData.id);
+            if (itemIndex !== -1) {
+                // Mevcut dosya varsa, güncelleniyor
+                data[itemIndex] = formData;
+            } else {
+                // Yeni bir dosya ekleniyor
+                data.push(formData);
+            }
+
+            localStorage.setItem('hasarData', JSON.stringify(data));
 
             alert('Veriler Kaydedildi!');
             document.getElementById('formPage').style.display = 'none';
             document.getElementById('mainPage').style.display = 'block';
-            populateTable(storedData); // Tabloyu güncelle
+            populateTable(data); // Tabloyu güncelle
         }
 
         function geriDon() {
