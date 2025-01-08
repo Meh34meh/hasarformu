@@ -288,13 +288,26 @@
         #confirmDialog button:hover {
           background: #003d80;
         }
+        .form-page .buttons button {
+            width: 120px; /* Yaklaşık 3x5 cm için, 120px genişlik ve 60px yükseklik */
+            height: 60px;
+            font-size: 16px; /* Font boyutunu da büyütmek isteyebilirsiniz */
+            margin: 0; /* Varsayılan margin'i sıfırla */
+        }
+
+        .form-page .buttons {
+            display: flex;
+            justify-content: center; /* Butonları sayfa ortasına hizala */
+            align-items: center; /* Dikey hizalama */
+            gap: 20px; /* Butonlar arasında 5 cm (yaklaşık 20px) boşluk */
+        }
     </style>
 </head>
 <body>
      <!-- Giriş sayfası -->
     <div id="loginPage" class="login-page">
         <div class="login-form">
-            <img src="logo.png" alt="Logo" style="display: block; margin: 0 auto;">
+            <img src="logo1.png" alt="Logo" style="display: block; margin: 0 auto;">
             <input type="text" id="username" placeholder="Kullanıcı Adı">
             <input type="password" id="password" placeholder="Şifre">
             <button onclick="login()">Giriş Yap</button>
@@ -512,9 +525,9 @@
 
             <!-- Alt Butonlar -->
             <div class="buttons">
-                <button onclick="geriDon()" style="float: left; margin-right: 20px;">Geri</button>
-                <button onclick="kaydetVeriler()" style="float: right;">Kaydet</button>
-            </div>
+    <button onclick="geriDon()">Geri</button>
+    <button onclick="kaydetVeriler()">Kaydet</button>
+</div>
         </div>
 
         <!-- Modal Yapısı -->
